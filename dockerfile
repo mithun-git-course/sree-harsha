@@ -1,2 +1,2 @@
-FROM ubuntu
+FROM alpine
 RUN yum install nginx
