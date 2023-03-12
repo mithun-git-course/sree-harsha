@@ -1,0 +1,1 @@
+FROM is a command to install the base images
