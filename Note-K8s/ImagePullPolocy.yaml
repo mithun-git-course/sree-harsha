@@ -1,0 +1,15 @@
+Kubelet first time puul the images from docker hub or ECS,
+But when develpers updated the images and pushed to the docker hub ,And you need to pull it out ,
+for that u can't pull it directly,so we need to write something to pull updated image.
+---
+apiVersion: null
+kind: pod
+metadata:
+  name: muiltiple
+spec:
+  container:
+    - image: nginx
+      imagePullPolicy: always
+      name: nginx:v1
+      ports:
+        - containerPort: 80

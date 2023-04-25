@@ -1,0 +1,56 @@
+In K8s we have two type of resources 1.Cluster level ,2. namespace level.
+#To check namespace
+kubectl get ns
+
+#POD Creation
+---
+apiVersion: v1
+kind: pod 
+metadata: 
+  name: Nginx
+  namespace: roboshop
+spec:
+  containers: 
+  - image: Nginx
+    name: nginx:v1
+    port:
+     - containerPort: 80
+
+With Above yaml.file we can create pod by using the command :
+kubectl apply -f <file.yaml>
+kubectl get pod -n roboshop #we stored the pods in namespce of roboshop
+
+Pod is smallest box of the k8s,
+But in one Pod we can run multiple containers of roboshop.
+
+In pod We have container ,which gonna create lot of logs, metrics so to retrive we need to open ,
+it is not proper way to check logs of those containers, so we one another Service is Called SideCar containers.
+This side car container will communicate with web container,And those log push to the ELK,
+Web contaianer is busy to serving the application. traffic,requests,response.
+
+#now Create muiltiple resources in namespce to push the logs to ELK by using SideCar
+---
+apiVersion: v1 
+kind: pod 
+metadata: 
+  name: muiltiple
+spec:
+  containers:
+  - image: Nginx
+    name: nginx:v1
+  - image: almalinux
+    name: SideCar
+    command: ["sleep","200"] #Alma linux can't run independently we need to give command
+
+Here we have created 2 containers 1. nginx, 2. almalinux.
+Now we need to create by the command
+kubectl apply -f <file name.yaml>
+Let's check the almalinux wheather it is connecting Nginx server or not.
+kubectl exec -it muiltiple -c SideCar --bash
+Then enter "curl localhost"
+You gonna find that nginx is ruuning.
+The containers which are running in same one pod all the containers shares same network and they have one IP Adress
+#To delete the pod
+kubectl delete -f <file.yaml>
+
+
